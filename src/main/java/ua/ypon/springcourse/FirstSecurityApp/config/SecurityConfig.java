@@ -6,9 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import ua.ypon.springcourse.FirstSecurityApp.services.PersonDetailsService;
 
@@ -16,6 +14,7 @@ import ua.ypon.springcourse.FirstSecurityApp.services.PersonDetailsService;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    // За допомогою анотації @Autowired виконуємо ін'єкцію залежностей
     final PersonDetailsService personDetailsService;
 
     @Autowired
@@ -23,12 +22,12 @@ public class SecurityConfig {
         this.personDetailsService = personDetailsService;
     }
 
+    // Анотація @Bean позначає метод, який повертає бін (компонент контейнера Spring)
     @Bean
     public org.springframework.security.web.DefaultSecurityFilterChain SecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
         //конфігуруємо сам spring security
         //конфігуруємо авторизацію
-        httpSecurity.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorize -> authorize
+        httpSecurity.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/auth/login", "/auth/registration", "/error").permitAll()
                 .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin.loginPage("/auth/login")
@@ -45,12 +44,13 @@ public class SecurityConfig {
 
     //Налаштування футентифікації
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-
+        // Використовуємо сервіс personDetailsService для перевірки імені користувача та паролю
         auth.userDetailsService(personDetailsService)
                 .passwordEncoder(getPasswordEncoder());
         }
 
-        @Bean
+    // Метод, що повертає бін PasswordEncoder
+    @Bean
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
         }

@@ -7,10 +7,11 @@ import org.springframework.stereotype.Service;
 import ua.ypon.springcourse.FirstSecurityApp.models.Person;
 import ua.ypon.springcourse.FirstSecurityApp.repositories.PeopleRepository;
 
-
+//реєстрація нових користувачів
 @Service
 public class RegistrationService {
 
+    // Анотація @Autowired вказує на ін'єкцію залежностей
     private final PeopleRepository peopleRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -20,9 +21,13 @@ public class RegistrationService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    // Анотація @Transactional вказує на те, що цей метод має бути виконаний в межах транзакції
     @Transactional
     public void register(Person person) {
+        // Кодуємо пароль за допомогою passwordEncoder
         person.setPassword(passwordEncoder.encode(person.getPassword()));
+
+        // Зберігаємо користувача в базі даних через peopleRepository
         peopleRepository.save(person);
     }
 }

@@ -17,6 +17,7 @@ import java.util.Optional;
 @Service
 public class PersonDetailsService implements UserDetailsService {
 
+    // Анотація @Autowired вказує на ін'єкцію залежності
     private final PeopleRepository peopleRepository;
 
     @Autowired
@@ -24,13 +25,17 @@ public class PersonDetailsService implements UserDetailsService {
         this.peopleRepository = peopleRepository;
     }
 
+    // Метод інтерфейсу UserDetailsService, який знаходить користувача за іменем користувача (логіном)
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // Отримуємо інформацію про користувача за його ім'ям користувача
         Optional<Person> person = peopleRepository.findByUsername(username);
 
-        if(person.isEmpty())
-            throw new UsernameNotFoundException("User not found!");
+        // Перевіряємо, чи знайдений користувач
+        if (person.isEmpty())
+            throw new UsernameNotFoundException("Користувача не знайдено!");
 
+        // Створюємо та повертаємо об'єкт PersonDetails, який містить інформацію про користувача
         return new PersonDetails(person.get());
     }
 }
