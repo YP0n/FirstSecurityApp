@@ -28,12 +28,13 @@ public class SecurityConfig {
         //конфігуруємо сам spring security
         //конфігуруємо авторизацію
         httpSecurity.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/auth/login", "/auth/registration", "/error").permitAll()
-                .anyRequest().authenticated())
+                        .requestMatchers("/admin").hasRole("ADMIN")
+                        .requestMatchers("/auth/login", "/auth/registration", "/error").permitAll()
+                        .anyRequest().hasAnyRole("USER", "ADMIN"))
                 .formLogin(formLogin -> formLogin.loginPage("/auth/login")
-                .loginProcessingUrl("/process_login")
-                .defaultSuccessUrl("/hello", true)
-                .failureUrl("/auth/login?error"))
+                        .loginProcessingUrl("/process_login")
+                        .defaultSuccessUrl("/hello", true)
+                        .failureUrl("/auth/login?error"))
                 .logout(log -> log.logoutUrl("/logout"))
                 .logout(logSuc -> logSuc.logoutSuccessUrl("/auth/login"));
 
@@ -47,12 +48,12 @@ public class SecurityConfig {
         // Використовуємо сервіс personDetailsService для перевірки імені користувача та паролю
         auth.userDetailsService(personDetailsService)
                 .passwordEncoder(getPasswordEncoder());
-        }
+    }
 
     // Метод, що повертає бін PasswordEncoder
     @Bean
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
-        }
     }
+}
 

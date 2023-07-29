@@ -26,7 +26,8 @@ public class RegistrationService {
     public void register(Person person) {
         // Кодуємо пароль за допомогою passwordEncoder
         person.setPassword(passwordEncoder.encode(person.getPassword()));
-
+        //призначаємо всім звичайним користувачам роль-user
+        person.setRole("ROLE_USER");
         // Зберігаємо користувача в базі даних через peopleRepository
         peopleRepository.save(person);
     }

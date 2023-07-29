@@ -1,10 +1,12 @@
 package ua.ypon.springcourse.FirstSecurityApp.security;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ua.ypon.springcourse.FirstSecurityApp.models.Person;
 
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * net.ukr@caravell 28/06/2023
@@ -21,7 +23,8 @@ public class PersonDetails implements UserDetails {
     // Метод, який повертає список ролей користувача (авторизованих)
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        //повертаємо колекцію ролей для користувача
+        return Collections.singletonList(new SimpleGrantedAuthority(person.getRole()));
     }
 
     // Метод, який повертає пароль користувача
